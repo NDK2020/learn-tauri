@@ -1,0 +1,101 @@
+@import "./common.scss";
+:root {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+
+
+//----------------
+//-- @responsive
+//----------------
+  //layout-dimension
+  --content-width: 1170px;
+  --header-height: 70px;
+.content-width-boxed {
+  max-width: var(--content-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* desktop max-width-content: 1170px */
+@media screen and (min-width: 1068px) {
+}
+
+/* tablet max-width-content: 768px  */
+@media screen and (max-width: 1024px) {
+  --content-width: 768px;
+  .content-width-boxed {
+    max-width: var(--content-width);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* mobile max-width-content: 327px  */
+@media screen and (max-width: 480px) {
+  --content-width: 327px;
+  .content-width-boxed {
+    max-width: var(--content-width);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+// /*Ipad dọc(768 x 1024)*/
+// @media screen and (max-width: 768px){
+//
+// }
+//
+// /*Tablet nhỏ(480 x 640)*/
+// @media screen and (max-width: 480px){
+//
+// }
+//
+// /*Iphone(480 x 640)*/
+// @media screen and (max-width: 320px){
+//
+// }
+//
+// /*Smart phone nhỏ*/
+// @media screen and (max-width: 240px){
+//
+// }
+//
+}
+
+html,
+body,
+#app {
+  /* scrollbar-gutter: stable; */
+   // overflow-y: overlay;
+   // overflow-x: hidden;
+   background-image: linear-gradient(
+     311.32deg,
+     #5b00e3 -43.57%,
+     #ff3177 102.66%
+   );
+   background-repeat: no-repeat;
+   height: 100vw;
+
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #f6f6f6;
+    background-color: #2f2f2f;
+  }
+
+  // a:hover {
+  //   color: #24c8db;
+  // }
+  //
+  // input,
+  // button {
+  //   color: #ffffff;
+  //   background-color: #0f0f0f98;
+  // }
+  // button:active {
+  //   background-color: #0f0f0f69;
+  // }
+}
