@@ -22,5 +22,4 @@
 <style lang="scss">
 @import "@/styles/index.scss";
 
-.home {}
 </style>

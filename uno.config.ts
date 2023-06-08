@@ -2,8 +2,19 @@ import { defineConfig, presetUno, transformerVariantGroup } from 'unocss'
 import presetRemToPx from '@unocss/preset-rem-to-px'
 
 export default defineConfig({
-  exclude: ['node_modules', '.git', 'dist'],
-  presets: [presetUno(), presetRemToPx({baseFontSize: 4})],
+  content: {
+    pipeline: {
+      // include: [
+      //   // the default
+      //   /\.(vue|svelte|[jt]sx|mdx?|astro|elm|php|phtml|html)($|\?)/,
+      //   // include js/ts files
+      //   'src/**/*.{js,ts}',
+      // ],
+      // exclude files
+      exclude: ['node_modules', '.git', 'dist'],
+    }
+  },
+  presets: [presetUno(), presetRemToPx({ baseFontSize: 4 })],
   transformers: [transformerVariantGroup()],
   shortcuts: {
     'flex-col': 'flex flex-col',

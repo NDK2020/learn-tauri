@@ -34,15 +34,34 @@ jobs:
         with:
           workspaces: './src-tauri -> target'
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+          # run_install: false
+
+      # - name: Get pnpm store directory
+      #   id: pnpm-cache
+      #   shell: bash
+      #   run: |
+      #     echo "STORE_PATH=$(pnpm store path | tr -d '\n')" >> $GITHUB_OUTPUT
+
+
       - name: Sync node version and setup cache
         uses: actions/setup-node@v3
         with:
-          node-version: 'lts/*'
+          node-version: '16'
           cache: 'pnpm' # Set this to npm, yarn or pnpm.
+          # path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          # key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          # restore-keys: |
+          #   ${{ runner.os }}-pnpm-store-
+
 
       - name: Install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
-        run: pnpm install # Change this to npm, yarn or pnpm.
+        run: pnpm install --no-frozen-lockfile
+ 
 
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
