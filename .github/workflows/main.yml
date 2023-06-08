@@ -40,6 +40,12 @@ jobs:
           node-version: 'lts/*'
           cache: 'pnpm' # Set this to npm, yarn or pnpm.
 
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+
       - name: Install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         uses: pnpm/action-setup@v2
