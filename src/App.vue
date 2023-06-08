@@ -17,10 +17,10 @@
 <script setup lang="ts">
 // sudo sysctl fs.inotify.max_user_watches=131070
 // sudo sysctl -p
+// sudo sysctl -p
 </script>
 
 <style lang="scss">
 @import "@/styles/index.scss";
 
-.home {}
 </style>
