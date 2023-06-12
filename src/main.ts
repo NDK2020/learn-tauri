@@ -2,7 +2,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 
-// import { setupRouter } from './router'
+import { setup_router } from './router'
 // import { setupStore } from './stores'
 
 import 'uno.css';
@@ -10,7 +10,7 @@ import "ant-design-vue/dist/antd.css";
 
 async function setup_app() {
   const app = createApp(App)
-  // await setupRouter(app)
+  await setup_router(app)
   // setupStore(app)
   app.mount('#app')
   // app.use(Antd);

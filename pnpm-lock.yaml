@@ -14,8 +14,14 @@ dependencies:
   vue:
     specifier: ^3.2.45
     version: 3.2.45
+  vue-router:
+    specifier: ^4.2.2
+    version: 4.2.2(vue@3.2.45)
 
 devDependencies:
+  '@iconify-json/ic':
+    specifier: ^1.1.13
+    version: 1.1.13
   '@iconify/vue':
     specifier: ^4.1.1
     version: 4.1.1(vue@3.2.45)
@@ -350,6 +356,12 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@iconify-json/ic@1.1.13:
+    resolution: {integrity: sha512-5i5zal/VRwTrs99iMTnG1Zu97bgX9Mkiu9TzR1U1rHBylUnBW+HkOweoQVEPgQITGG024/lNbZxU+3Aa2xuDww==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
 
   /@iconify/types@2.0.0:
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -934,6 +946,10 @@ packages:
       '@vue/compiler-dom': 3.3.4
       '@vue/shared': 3.3.4
     dev: true
+
+  /@vue/devtools-api@6.5.0:
+    resolution: {integrity: sha512-o9KfBeaBmCKl10usN4crU53fYtC1r7jJwdGKjPT24t348rHxgfpZ0xL3Xm/gLUYnc0oTp8LAmrxOeLyu6tbk2Q==}
+    dev: false
 
   /@vue/devtools@6.5.0:
     resolution: {integrity: sha512-PlXwf1k5LABNayF71QSfmRL0sRIcBR5HKjrsmGf+raILJ5h32/MRbzA0UpfS/fudCyRgi8F7W5KC1wLRfkTxPQ==}
@@ -2853,6 +2869,15 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
+
+  /vue-router@4.2.2(vue@3.2.45):
+    resolution: {integrity: sha512-cChBPPmAflgBGmy3tBsjeoe3f3VOSG6naKyY5pjtrqLGbNEXdzCigFUHgBvp9e3ysAtFtEx7OLqcSDh/1Cq2TQ==}
+    peerDependencies:
+      vue: ^3.2.0
+    dependencies:
+      '@vue/devtools-api': 6.5.0
+      vue: 3.2.45
+    dev: false
 
   /vue-template-compiler@2.7.14:
     resolution: {integrity: sha512-zyA5Y3ArvVG0NacJDkkzJuPQDF8RFeRlzV2vLeSnhSpieO6LK2OVbdLPi5MPPs09Ii+gMO8nY4S3iKQxBxDmWQ==}

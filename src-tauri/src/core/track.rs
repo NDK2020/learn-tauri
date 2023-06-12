@@ -4,13 +4,14 @@ use midi_file::file::{
 };
 use midi_file::core::Message;
 
-use crate::libs::macros as m;
+use crate::libs::custom_macros as cm;
+use serde::Serialize;
 
 
 //-----------
 //-- @track
 //-----------
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct Track {
   id: i32,
   /// Tempo Meta-Event
@@ -190,7 +191,7 @@ impl Track {
     println!("len of timespan: {}", self.timespans_mt3.len());
 
     println!("epsilon: {}", f64::EPSILON);
-    m::add!(1, 2);
+    // cm::add!(1, 2);
   }
 
   pub fn timespans_mt3(&self) -> &Vec<f32> {

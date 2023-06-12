@@ -1,10 +1,10 @@
-
 use midi_file::core::{Channel, Message, NoteNumber, Velocity};
 use midi_file::file::{Event, TrackEvent};
+use serde::Serialize;
 //----------
 //-- @note
 //----------
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Note {
   id: i32,
   delta_time: u32,
@@ -35,7 +35,7 @@ impl Default for Note {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize)]
 pub enum Kind {
   On,
   Off,

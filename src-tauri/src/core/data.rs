@@ -2,12 +2,13 @@ use crate::core::Note;
 use crate::core::Track as CoreTrack;
 use midi_file::file::{Division, Event, Header, MetaEvent, QuarterNoteDivision, Track, TrackEvent};
 use midi_file::MidiFile;
+use serde::Serialize;
 
 //----------
 //-- @data
 //----------
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Serialize)]
 pub struct Data {
   num_of_tracks: u32,
   // pulse per quarter note/division

@@ -20,6 +20,7 @@ export default [
     dirs: [
       "src/components",
       "src/constants",
+      "src/pages",
     ],
 
     deep: true,

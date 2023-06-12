@@ -5,7 +5,7 @@ import { setup_vite_plugins } from "./plugins";
 
 // https://vitejs.dev/config/
 export default defineConfig(async (env) => {
-  const viteEnv = loadEnv(env.mode, process.cwd()); //as ImportMetaEnv;
+  const viteEnv = loadEnv(env.mode, process.cwd()) as ImportMetaEnv;
   const rootPath = fileURLToPath(new URL("./", import.meta.url));
   const srcPath = `${rootPath}src`;
 
