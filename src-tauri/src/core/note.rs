@@ -11,9 +11,10 @@ pub struct Note {
   kind: Kind,
   channel: String,
   note_number: u8,
+  name: String,
   seconds_per_tick: f32,
   velocity: u8,
-  /// delta-time: The time difference in ticks between 
+  /// delta-time: The time difference in ticks between
   /// the previous MIDI track event and the current one
   /// delta-time in seconds
   delta_time_in_seconds: f32,
@@ -29,6 +30,7 @@ impl Default for Note {
       seconds_per_tick: 0.0,
       channel: "0".to_string(),
       note_number: 0,
+      name: "".to_string(),
       velocity: 100,
       kind: Kind::Off,
     }
@@ -42,12 +44,7 @@ pub enum Kind {
 }
 
 impl Note {
-  pub fn get_data_from(
-    &mut self,
-    id: i32,
-    track_event: &TrackEvent,
-    seconds_per_tick: f32
-  ) {
+  pub fn get_data_from(&mut self, id: i32, track_event: &TrackEvent, seconds_per_tick: f32) {
     self.get_data_from_track_event(id, track_event);
     self.seconds_per_tick = seconds_per_tick;
   }
@@ -65,6 +62,7 @@ impl Note {
       self
         .set_channel(note_message.channel())
         .set_note_number(note_message.note_number())
+        .set_note_name(note_message.note_number())
         .set_velocity(note_message.velocity())
         .set_kind();
     };
@@ -85,6 +83,18 @@ impl Note {
     self
   }
 
+  pub fn set_note_name(&mut self, note_number: NoteNumber) -> &mut Self {
+    self.name = self.convert_note_number_to_name(note_number.get());
+    self
+  }
+
+  pub fn convert_note_number_to_name(&self, num: u8) -> String {
+    match num {
+      96 => "C7".to_string(),
+      _ => "none".to_string()
+    }
+  }
+
   pub fn set_velocity(&mut self, velocity: Velocity) -> &mut Self {
     self.velocity = velocity.into();
     self
@@ -103,22 +113,35 @@ impl Note {
     self
   }
 
-    /// A getter for the `delta_time_in_seconds` field.
-    pub fn delta_time_in_seconds(&self) -> f32 {
-        self.delta_time_in_seconds
-    }
+  /// A getter for the `delta_time_in_seconds` field.
+  pub fn delta_time_in_seconds(&self) -> f32 {
+    self.delta_time_in_seconds
+  }
 
   pub fn calc_delta_time_in_seconds(&mut self) {
-    self.delta_time_in_seconds = 
-      self.delta_time as f32 * self.seconds_per_tick;
+    self.delta_time_in_seconds = self.delta_time as f32 * self.seconds_per_tick;
+  }
+
+  pub fn note_number(&self) -> &u8 {
+    &self.note_number
+  }
+
+  pub fn name(&self) -> String {
+    self.name.clone()
+  }
+
+  pub fn velocity(&self) -> u8 {
+    self.velocity
   }
 
   pub fn is_on(&self) -> bool {
     if let Kind::On = self.kind {
-      return true
-    } 
+      return true;
+    }
     false
   }
+
+
 }
 
 pub enum NoteName {
@@ -143,7 +166,7 @@ pub enum NoteName {
   Db6 = 97,
   Db7 = 109,
   Db8 = 121,
-  
+
   ///D
   D0 = 26,
   D1 = 38,

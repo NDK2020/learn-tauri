@@ -16,47 +16,12 @@ use crate::libs::custom_macros as cm;
 fn main() {
   tauri::Builder::default()
     .invoke_handler(tauri::generate_handler![
-      read_midi_gduc,
-      read_midi_mt3,
       read_midi
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
 
-#[tauri::command]
-fn read_midi_gduc(file_path_str: &str) -> String {
-  let midi_file = read_midi_file(file_path_str.to_string());
-  let mut data = Data::default();
-  data.get_data_from(midi_file);
-  let tmp: Vec<String> = data
-    .track_1()
-    .timespans_mt3()
-    .clone()
-    .iter()
-    .filter(|&&x| !cm::is_approx!(x as f64, 0.0, 1e-2))
-    .map(|x| x.to_string())
-    .collect();
-  matches!(0, 0);
-  tmp.join(",")
-}
-
-#[tauri::command]
-fn read_midi_mt3(file_path_str: &str) -> String {
-  let midi_file = read_midi_file(file_path_str.to_string());
-  let mut data = Data::default();
-  data.get_data_from(midi_file);
-  let tmp: Vec<String> = data
-    .track_1()
-    .timespans_mt3()
-    .clone()
-    .iter()
-    .filter(|&&x| !cm::is_approx!(x as f64, 0.0, 1e-2))
-    .map(|x| x.to_string())
-    .collect();
-
-  tmp.join(",")
-}
 
 // create the error type that represents all errors possible in our program
 // #[derive(Debug, thiserror::Error)]
@@ -88,7 +53,13 @@ fn read_midi(file_path_str: &str) -> Track {
   let mut data = Data::default();
   data.get_data_from(midi_file);
   data.track_1().clone()
-  // Ok(data.track_1().clone())
+}
+
+#[test]
+fn test_read_midi() {
+  let midi_file = read_midi_file(get_file_path());
+  let mut data = Data::default();
+  data.get_data_from(midi_file);
 }
 
 fn run() {

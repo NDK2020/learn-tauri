@@ -27,10 +27,19 @@ pub struct Track {
   name: String,
   num_of_notes: usize,
   notes: Vec<Note>,
-  timespans_mt3: Vec<f32>
+  // timespan bwt notes
+  timespans: Vec<f32>,
+  notes_on: Vec<Note>,
+  notes_off: Vec<Note>,
+  notes_names: Vec<String>,
+  notes_velocities: Vec<String>,
+  raw_str_vec: Vec<String>
 }
 
+
 impl Track {
+
+
   pub fn get_data_from(
     &mut self,
     header: &Header,
@@ -40,8 +49,20 @@ impl Track {
     self.get_data_from_header(header);
     self.get_data_from_tracks(track_has_tempo, track_has_notes);
     self.calc_notes_delta_time_in_seconds();
+
+    //
+    let notes_clone = self.notes.clone();
+    self.set_notes_on(&notes_clone);
+    self.set_notes_off(&notes_clone);
+    //
+    let notes_on_clone = self.notes_on.clone();
+    self.set_notes_names(&notes_on_clone);
+    self.set_notes_velocities(&notes_on_clone);
+    //
+    self.get_timespans();
+    self.get_raw_str_vec();
     self.log();
-    self.calc_timespans_mt3();
+    //
   }
 
   pub fn get_data_from_header(&mut self, header: &Header) {
@@ -164,39 +185,60 @@ impl Track {
 /// or
 /// start a, start b, end a, end b.
 /// Because of this ambiguity, I believe overlapping notes of the same channel and key are usually avoided in MIDI.
-  fn calc_timespans_mt3(&mut self) {
-    let mut id = 0;
-
-    let notes_on = self.notes
-      .iter()
-      .filter(|e| e.is_on());
-
-    let notes_off = self.notes
-      .iter()
-      .filter(|e| !e.is_on());
-    assert_eq!(
-
-      notes_on.clone().count(), notes_off.clone().count(),
-      "len of notes on/off list must be eq"
-    );
-
-
-    for (note_on, note_off) in notes_on.zip(notes_off) {
-      self.timespans_mt3.push(
+  pub fn get_timespans(&mut self) {
+    for (note_on, note_off) in self.notes_on.iter().zip(self.notes_off.iter()) {
+      self.timespans.push(
         note_on.delta_time_in_seconds() + note_off.delta_time_in_seconds()
       )
     }
-
-    self.timespans_mt3.iter().for_each(|e| println!("{}", e));
-    println!("len of timespan: {}", self.timespans_mt3.len());
-
-    println!("epsilon: {}", f64::EPSILON);
-    // cm::add!(1, 2);
+    self.timespans = self.timespans
+      .clone()
+      .into_iter()
+      .filter(|&e| e > 1e-2)
+      .collect();
   }
 
-  pub fn timespans_mt3(&self) -> &Vec<f32> {
-    &self.timespans_mt3
+  pub fn set_notes_on(&mut self, notes: &Vec<Note>) {
+    self.notes_on = notes
+      .iter()
+      .filter(|e| e.is_on())
+      .cloned()
+      .collect();
   }
+
+  pub fn set_notes_off(&mut self, notes: &Vec<Note>) {
+    self.notes_off = notes
+      .iter()
+      .filter(|e| !e.is_on())
+      .cloned()
+      .collect();
+  }
+
+  pub fn set_notes_names(&mut self, notes: &Vec<Note>) {
+    self.notes_names = notes
+      .iter()
+      .map(|x| x.name()).collect();
+  }
+
+  pub fn set_notes_velocities(&mut self, notes: &Vec<Note>) {
+    self.notes_velocities = notes
+      .iter()
+      .map(|x| x.velocity().to_string()).collect();
+  }
+
+  pub fn get_raw_str_vec(&mut self) {
+    for (i,t) in self.timespans.iter().enumerate() {
+      let str = format!(
+        "id:{}-n:{}-t:{}-v:{}",
+        i,
+        self.notes_names[i],
+        t,
+        self.notes_velocities[i]
+      );
+      self.raw_str_vec.push(str);
+    }
+  }
+
 
 
   fn log(&self) {
@@ -211,6 +253,20 @@ impl Track {
       self.id, self.tempo, self.name, self.num_of_notes
     );
     self.log_notes();
+    println!("--------------------");
+    println!(
+      " refine data:
+
+      timespans: {:?}
+      notes_on: {:?}
+      notes_off: {:?}
+      notes_names: {:?}
+      notes_velocities: {:?}
+      raw_str_vec: {:?}
+    ",
+      self.timespans, self.notes_on, self.notes_off, self.notes_names,
+      self.notes_velocities, self.raw_str_vec
+    );
     println!("--------------------");
   }
 

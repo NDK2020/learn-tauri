@@ -13,7 +13,13 @@ export interface Track {
   name: string,
   num_of_notes: number,
   notes: Note[],
-  timespans_mt3: number[]
+  timespans_mt3: number[],
+  timespans: number[],
+  notes_on: Note[],
+  notes_off: Note[],
+  notes_names: string[],
+  notes_velocities: string[],
+  raw_str_vec: string[]
 }
 
 export interface Note {
@@ -22,6 +28,7 @@ export interface Note {
   kind: string,
   channel: string,
   note_number: number,
+  name: string,
   seconds_per_tick: number,
   velocity: number,
   /// delta-time: The time difference in ticks between 
