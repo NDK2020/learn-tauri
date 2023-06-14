@@ -18,12 +18,9 @@ declare module 'vue' {
     'IconIc:sharpAddCircleOutline': typeof import('~icons/ic/sharp-add-circle-outline')['default']
     'IconIc:sharpRemoveCircleOutline': typeof import('~icons/ic/sharp-remove-circle-outline')['default']
     MidiReader: typeof import('./../components/midi-reader.vue')['default']
-    MidiReaderDropdown: typeof import('./../components/midi-reader-dropdown.vue')['default']
-    MidiReaderMt3: typeof import('./../components/midi-reader-mt3.vue')['default']
     QuickLinks: typeof import('./../pages/quick-links/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Upload: typeof import('./../components/upload.vue')['default']
-    UserOutlined: typeof import('@ant-design/icons-vue')['UserOutlined']
   }
 }

@@ -17,7 +17,7 @@
 
     <div class="main-wrapper flex-start gap-0">
       <div class="empty-left-section" :style="{width: sidebar_width}"></div>
-      <layout-main :header_height="header_height" :sidebar_width="sidebar_width" />
+      <layout-main  />
     </div>
 
   </div>

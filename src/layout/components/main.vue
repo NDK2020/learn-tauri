@@ -9,7 +9,9 @@
 </template>
 
 <script setup lang="ts">
-import type { CSSProperties } from "vue";
+//import type { CSSProperties } from "vue";
+
+/*
 interface Props {
   header_height: string,
   sidebar_width: string
@@ -20,12 +22,14 @@ const props = withDefaults(defineProps<Props>(), {
   sidebar_width: "100px"
 })
 
+
 const styles = computed<CSSProperties>(() => {
   return {
     width: 100% - props.sidebar_width,
     marginTop: props.header_height
   }
 })
+*/
 
 </script>
 

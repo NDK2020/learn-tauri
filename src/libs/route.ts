@@ -58,5 +58,6 @@ function transformIcon(
     return () => h(Icon, { icon, style })
   }
 
+  //@ts-ignore
   return () => h(Icon, { icon, style })
 }
