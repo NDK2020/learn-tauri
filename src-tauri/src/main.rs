@@ -57,23 +57,26 @@ fn read_midi(file_path_str: &str) -> Track {
 
 #[test]
 fn test_read_midi() {
-  let midi_file = read_midi_file(get_file_path());
-  let mut data = Data::default();
-  data.get_data_from(midi_file);
-}
-
-fn run() {
   let file_path_str = get_file_path();
   println!("file_path: {} ", file_path_str);
   //
   let midi_file = read_midi_file(file_path_str);
+
+  println!("len of tracks: {}", midi_file.tracks_len());
+  //
+  // let mut tracks = midi_file.tracks();
+  // for (i, track) in tracks.enumerate() {
+  //   println!("track {}: {:?}", i, track);
+  //   println!("*********************");
+  // }
   let mut data = Data::default();
   data.get_data_from(midi_file);
 }
 
 fn get_file_path() -> String {
   let base_path = "./src/assets/";
-  let file_name = "Herewithme_playableads_tut";
+  // let file_name = "Herewithme_playableads_tut";
+  let file_name = "Cupid_FiftyFifty_BH_PlayableAd";
   let file_extension = ".mid";
 
   format!("{}{}{}", base_path, file_name, file_extension)

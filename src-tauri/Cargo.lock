@@ -1484,9 +1484,7 @@ dependencies = [
 
 [[package]]
 name = "midi_file"
-version = "0.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "afb366ccc7a766255492877a643db98c6803cd827633043b2b889b6465a94ec2"
+version = "0.0.3"
 dependencies = [
  "log",
  "snafu",

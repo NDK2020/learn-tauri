@@ -65,7 +65,7 @@ impl Track {
     //
   }
 
-  pub fn get_data_from_header(&mut self, header: &Header) {
+   fn get_data_from_header(&mut self, header: &Header) {
     let division = header.division();
     if let Division::QuarterNote(quarter_note_division) = division {
       self.set_division(quarter_note_division.get());
@@ -76,7 +76,7 @@ impl Track {
     self.division = value;
   }
 
-  pub fn get_data_from_tracks(&mut self, track_has_tempo: &MfTrack, track_has_notes: &MfTrack) {
+   fn get_data_from_tracks(&mut self, track_has_tempo: &MfTrack, track_has_notes: &MfTrack) {
     self.get_tempo(track_has_tempo);
     self.calc_sec_per_tick();
     //
@@ -254,19 +254,15 @@ impl Track {
     );
     self.log_notes();
     println!("--------------------");
-    println!(
-      " refine data:
+    println!("timespans: {:?}", self.timespans);
+    println!("\nnotes_on");
+    self.notes_on.iter().for_each(|e| println!("{:?}", e));
+    println!("\nnotes_off");
+    self.notes_off.iter().for_each(|e| println!("{:?}", e));
+    println!("\nnotes_names: {:?}", self.notes_names);
+    println!("\nnotes_velocities: {:?}", self.notes_velocities);
 
-      timespans: {:?}
-      notes_on: {:?}
-      notes_off: {:?}
-      notes_names: {:?}
-      notes_velocities: {:?}
-      raw_str_vec: {:?}
-    ",
-      self.timespans, self.notes_on, self.notes_off, self.notes_names,
-      self.notes_velocities, self.raw_str_vec
-    );
+    println!("\nraw vec string: {:?}", self.raw_str_vec);
     println!("--------------------");
   }
 
