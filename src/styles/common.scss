@@ -185,13 +185,19 @@ body,
     #ff3177 102.66%
   );
   background-repeat: no-repeat;
-  height: 100vw;
+  height: 200vw;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
-    background-color: #2f2f2f;
+    // background-color: #2f2f2f;
+  background: linear-gradient(
+    311.32deg,
+    #5b00e3 -43.57%,
+    #ff3177 102.66%
+  );
+
   }
 
   // a:hover {

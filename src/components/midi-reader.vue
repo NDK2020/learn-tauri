@@ -1,11 +1,14 @@
 <template>
   <div class="midi-reader flex-col-center w-full">
-    <a-button type="primary" @click="on_click" class="button flex-y-center">
-      <div class="flex-center gap-8 w-full h-full">
-        <Icon icon="solar:upload-track-2-bold" class="mt3-reader__icon" />
-        <Icon icon="simple-icons:midi" class="mt3-reader__icon" />
-      </div>
-    </a-button>
+    <div class="flex-end">
+      <dropdown-games @dropdown-select="on_dropdown_select" />
+      <a-button type="primary" @click="on_click" class="button flex-y-center">
+        <div class="flex-center gap-8 w-full h-full">
+          <Icon icon="solar:upload-track-2-bold" class="mt3-reader__icon" />
+          <Icon icon="simple-icons:midi" class="mt3-reader__icon" />
+        </div>
+      </a-button>
+    </div>
 
     <div class="title-wrapper w-full mt-[16px] mb-[4px]"><h4> Copy This Content </h4></div>
     <a-textarea class="text-area" v-model:value="midi_info.output_str"
@@ -30,13 +33,14 @@ import { Track } from "@/types";
 //---------
 // @props
 //---------
-interface Props {
-  game_id: string;
-}
+const game_id = ref("");
 
-const props = withDefaults(defineProps<Props>(), {
-  game_id: "1",
-});
+const emit = defineEmits(["on_game_id_select"])
+const on_dropdown_select = (key: string) => {
+  console.log(key);
+  game_id.value = key;
+  emit("on_game_id_select", key);
+};
 
 //---------
 // @events
@@ -59,8 +63,7 @@ const on_click = async () => {
   invoke("read_midi", {filePathStr: f}).then((res) => {
     if (res) {
       let track = res as Track;
-      // let notes = track.notes;
-      // get_notes_data(notes);
+      console.log(track);
 
       midi_info.name = typeof f == "string" ? f.replace(/^.*[\\\/]/, "") : "";
       midi_info.num_of_notes = track.timespans.length.toString();
@@ -74,7 +77,7 @@ const on_click = async () => {
             ${midi_info.timespan_min} - ${midi_info.timespan_max}
       `;
 
-      switch(props.game_id) {
+      switch(game_id.value) {
         case "1":
           midi_info.output_str = track.timespans.map(t => t.toString()).join(",")
           break;

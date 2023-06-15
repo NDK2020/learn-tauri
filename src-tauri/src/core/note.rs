@@ -40,6 +40,7 @@ impl Default for Note {
 #[derive(Clone, Debug, Serialize)]
 pub enum Kind {
   On,
+  OnVelocityZero,
   Off,
 }
 
@@ -64,8 +65,18 @@ impl Note {
         .set_note_number(note_message.note_number())
         .set_note_name(note_message.note_number())
         .set_velocity(note_message.velocity())
-        .set_kind();
+        .set_kind_on();
     };
+
+    if let Message::NoteOff(note_message) = message {
+      self
+        .set_channel(note_message.channel())
+        .set_note_number(note_message.note_number())
+        .set_note_name(note_message.note_number())
+        .set_velocity(note_message.velocity())
+        .set_kind_off();
+    };
+
   }
 
   pub fn set_id(&mut self, id: i32) -> &mut Self {
@@ -90,6 +101,11 @@ impl Note {
 
   pub fn convert_note_number_to_name(&self, num: u8) -> String {
     match num {
+      101 => "F7".to_string(),
+      100 => "E7".to_string(),
+      99 => "Eb7".to_string(),
+      98 => "D7".to_string(),
+      97 => "Db7".to_string(),
       96 => "C7".to_string(),
       _ => "none".to_string()
     }
@@ -100,11 +116,16 @@ impl Note {
     self
   }
 
-  pub fn set_kind(&mut self) -> &mut Self {
+  pub fn set_kind_on(&mut self) -> &mut Self {
     self.kind = Kind::On;
     if (self.velocity == 0) {
-      self.kind = Kind::Off;
+      self.kind = Kind::OnVelocityZero;
     }
+    self
+  }
+
+  pub fn set_kind_off(&mut self) -> &mut Self {
+    self.kind = Kind::Off;
     self
   }
 
@@ -141,6 +162,19 @@ impl Note {
     false
   }
 
+  pub fn is_on_velocity_zero(&self) -> bool {
+    if let Kind::OnVelocityZero = self.kind {
+      return true;
+    }
+    false
+  }
+
+  pub fn is_off(&self) -> bool {
+    if let Kind::Off = self.kind {
+      return true;
+    }
+    false
+  }
 
 }
 

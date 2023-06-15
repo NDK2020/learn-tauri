@@ -47,7 +47,11 @@ impl Data {
       });
       let track_has_notes = tracks[self.track_has_note_id].clone();
       let track_closest_has_tempo = tracks[track_has_tempo_closest_id].clone();
-      self.track_main.get_data_from(midi_file.header(), &track_closest_has_tempo, &track_has_notes);
+      self.track_main.get_data_from(
+        midi_file.header(),
+        &track_closest_has_tempo,
+        &track_has_notes
+      );
     } else {
       println!("midi file doesn't have notes or tempo event");
     }
@@ -92,7 +96,7 @@ impl Data {
     println!("track-has-note-id: {}", self.track_has_note_id);
   }
 
-  fn log(self) {
+  pub fn log(self) {
     println!("--------------------");
     println!("data: {:?}", self);
     println!("--------------------");
@@ -116,7 +120,12 @@ impl Data {
     println!("--------------------");
   }
 
-  pub fn track_1(&self) -> &CoreTrack {
+  pub fn log_main_track(&self) {
+    self.log_header();
+    self.track_main.log();
+  }
+
+  pub fn track_main(&self) -> &CoreTrack {
     &self.track_main
   }
 }

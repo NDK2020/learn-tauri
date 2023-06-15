@@ -12,10 +12,11 @@ export interface Track {
   seconds_per_tick: number,
   name: string,
   num_of_notes: number,
-  notes: Note[],
-  timespans_mt3: number[],
+  raw_notes: Note[],
+  // timespan bwt notes
   timespans: number[],
   notes_on: Note[],
+  notes_on_velocity_zero: Note[],
   notes_off: Note[],
   notes_names: string[],
   notes_velocities: string[],

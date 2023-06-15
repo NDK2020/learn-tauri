@@ -12,6 +12,7 @@ use crate::core::{Data, Note, Track};
 mod libs;
 use crate::libs::custom_macros as cm;
 
+
 // lsof -i @localhost
 fn main() {
   tauri::Builder::default()
@@ -52,31 +53,64 @@ fn read_midi(file_path_str: &str) -> Track {
   let midi_file = read_midi_file(file_path_str.to_string());
   let mut data = Data::default();
   data.get_data_from(midi_file);
-  data.track_1().clone()
+  data.track_main().clone()
 }
 
 #[test]
-fn test_read_midi() {
+fn test_read_midi_with_data() {
   let file_path_str = get_file_path();
   println!("file_path: {} ", file_path_str);
   //
   let midi_file = read_midi_file(file_path_str);
 
   println!("len of tracks: {}", midi_file.tracks_len());
-  //
-  // let mut tracks = midi_file.tracks();
-  // for (i, track) in tracks.enumerate() {
-  //   println!("track {}: {:?}", i, track);
-  //   println!("*********************");
-  // }
   let mut data = Data::default();
   data.get_data_from(midi_file);
+  data.log_main_track();
 }
+
+#[test]
+fn test_read_midi_raw() {
+  let file_path_str = get_file_path();
+  println!("file_path: {} ", file_path_str);
+  //
+  let midi_file = read_midi_file(file_path_str);
+
+  println!("len of tracks: {}", midi_file.tracks_len());
+
+  let mut tracks = midi_file.tracks();
+  for (i, track) in tracks.enumerate() {
+    println!("track {} INFO: ", i);
+    track.events().for_each(|te| println!("{:?}", te));
+    println!("*********************");
+  }
+}
+
+
+#[test]
+fn test_all_songs() {
+  let paths = fs::read_dir("./src/assets/").unwrap();
+
+  for path in paths {
+    let path_clone = path.as_ref().unwrap().path().clone();
+    // println!("file_name: {}", path.as_ref().unwrap().path().clone().display());
+    println!("file_name: {}", path_clone.display());
+    let mut f = File::open(path_clone).unwrap();
+    let midi_file = MidiFile::read(f).unwrap();
+    println!("len of tracks: {}", midi_file.tracks_len());
+    let mut data = Data::default();
+    data.get_data_from(midi_file);
+    data.track_main().log_overall();
+    println!("####################\n");
+  }
+}
+
 
 fn get_file_path() -> String {
   let base_path = "./src/assets/";
   // let file_name = "Herewithme_playableads_tut";
   let file_name = "Cupid_FiftyFifty_BH_PlayableAd";
+  // let file_name = "Believer_DueCats";
   let file_extension = ".mid";
 
   format!("{}{}{}", base_path, file_name, file_extension)

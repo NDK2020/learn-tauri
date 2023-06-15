@@ -2,8 +2,7 @@
   <div class="home ">
     <h1 class="text-center mt-40"> read midi game '{{ game_name }}'</h1>
     <div class="flex-center gap-20 mt-40">
-      <dropdown-games @dropdown-select="on_dropdown_select" />
-      <midi-reader :game_id="game_id"/>
+      <midi-reader  @on_game_id_select="on_game_id_select"/>
     </div>
   </div>
 </template>
@@ -15,7 +14,7 @@ const DEFAULT_ID = "1";
 const game_name = ref<string>(DEFAULT_NAME);
 const game_id = ref<string>(DEFAULT_ID);
 
-const on_dropdown_select = (key: string) => {
+const on_game_id_select = (key: string) => {
   console.log(key);
   game_id.value = key;
   switch (parseInt(key)) {

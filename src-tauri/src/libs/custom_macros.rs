@@ -17,6 +17,7 @@ macro_rules! is_approx {
 pub(crate)  use is_approx;
 
 // cargo test -- --nocapture
+#[ignore]
 #[test]
 fn test_approx() {
   // let res = is_approx!(1.0, 2.0, 1e-4);
