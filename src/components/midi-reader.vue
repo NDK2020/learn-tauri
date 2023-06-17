@@ -72,9 +72,13 @@ const on_click = async () => {
       midi_info.raw_str = track.raw_str_vec.join(",");
       song_info.value = `
         name: ${midi_info.name}
-        num_of_notes: ${midi_info.num_of_notes}
+        num-of-notes: ${midi_info.num_of_notes}
         timespan(min - max) value: 
             ${midi_info.timespan_min} - ${midi_info.timespan_max}
+        --------------------
+        num-of-notes-on: ${track.notes_on.length}
+        num-of-notes-on-velocity-zero: ${track.notes_on_velocity_zero.length}
+        num-of-notes-off: ${track.notes_off.length}
       `;
 
       switch(game_id.value) {

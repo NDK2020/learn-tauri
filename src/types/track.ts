@@ -20,7 +20,10 @@ export interface Track {
   notes_off: Note[],
   notes_names: string[],
   notes_velocities: string[],
-  raw_str_vec: string[]
+  raw_str_vec: string[],
+  //Duration is measured as the time between reception of a NoteOn and it’s corresponding NoteOff.
+  // There is no way to know the duration of a note until you have seen the noteoff event.  By definition!
+  notes_durations: number[],
 }
 
 export interface Note {

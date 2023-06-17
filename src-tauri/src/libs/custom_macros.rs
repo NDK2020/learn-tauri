@@ -30,6 +30,12 @@ fn test_approx() {
     
 }
 
+#[test]
+fn test_utils() {
+  let flag = 0 as f32 == 0.0;
+  println!("0 eq 0.0: {}", flag);
+}
+
 
 #[macro_export]
 macro_rules! add {

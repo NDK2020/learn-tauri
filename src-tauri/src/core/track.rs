@@ -34,6 +34,9 @@ pub struct Track {
   notes_names: Vec<String>,
   notes_velocities: Vec<String>,
   raw_str_vec: Vec<String>,
+  //Duration is measured as the time between reception of a NoteOn and it’s corresponding NoteOff.
+  // There is no way to know the duration of a note until you have seen the noteoff event.  By definition!
+  notes_durations: Vec<f32>,
 }
 
 impl Track {
@@ -52,6 +55,7 @@ impl Track {
     self.set_notes_on(&raw_notes_clone);
     self.set_notes_on_velocity_zero(&raw_notes_clone);
     self.set_notes_off(&raw_notes_clone);
+    self.set_notes_durations();
     //
     let notes_on_clone = self.notes_on.clone();
     self.set_notes_names(&notes_on_clone);
@@ -60,6 +64,7 @@ impl Track {
     self.get_timespans();
     self.get_raw_str_vec();
     //
+    self.refine();
   }
 
   fn get_data_from_header(&mut self, header: &Header) {
@@ -184,8 +189,7 @@ impl Track {
   /// Because of this ambiguity, I believe overlapping notes of the same channel and key are usually avoided in MIDI.
   pub fn get_timespans(&mut self) {
     if (self.notes_on_velocity_zero.is_empty()) {
-      for (note_on, note_off) in self.notes_on.iter().zip(self.notes_off.iter())
-      {
+      for (note_on, note_off) in self.notes_on.iter().zip(self.notes_off.iter()) {
         self
           .timespans
           .push(note_on.delta_time_in_seconds() + note_off.delta_time_in_seconds())
@@ -202,13 +206,6 @@ impl Track {
       }
     }
 
-    // refine
-    self.timespans = self
-      .timespans
-      .clone()
-      .into_iter()
-      .filter(|&e| e > 1e-2)
-      .collect();
   }
 
   pub fn set_notes_on(&mut self, notes: &[Note]) {
@@ -227,6 +224,12 @@ impl Track {
     self.notes_off = notes.iter().filter(|e| e.is_off()).cloned().collect();
   }
 
+  pub fn set_notes_durations(&mut self) {
+    self.notes_off.iter().for_each(|e| {
+      self.notes_durations.push(e.delta_time_in_seconds());
+    })
+  }
+
   pub fn set_notes_names(&mut self, notes: &[Note]) {
     self.notes_names = notes.iter().map(|x| x.name()).collect();
   }
@@ -236,14 +239,58 @@ impl Track {
   }
 
   pub fn get_raw_str_vec(&mut self) {
+    let len = self.timespans.len();
     for (i, t) in self.timespans.iter().enumerate() {
+      // note on & note off both equal 0 => this note and a note
+      // before has double things depend on games
+      if self.check_note_on_off_is_zero(&i) { continue; }
+      //
+      let mut note_name_mirror = "-1".to_string();
+      if (i + 1 < len && self.check_note_on_off_is_zero(&(i + 1))) {
+        note_name_mirror = self.notes_on[i + 1].name();
+      }
+
+      // get duration
+      let mut duration = "-1".to_string();
+      if (self.notes_off.len() == self.notes_on.len()) {
+        duration = self.notes_durations[i].clone().to_string();
+      }
+
+      //
       let str = format!(
-        "id:{}-n:{}-t:{}-v:{}",
-        i, self.notes_names[i], t, self.notes_velocities[i]
+        "id:{}-n:{}-t:{}-v:{}-d:{}-m:{}",
+        i,
+        self.notes_names[i],
+        t,
+        self.notes_velocities[i],
+        duration,
+        note_name_mirror
       );
       self.raw_str_vec.push(str);
     }
   }
+
+  fn check_note_on_off_is_zero(&self, note_id: &usize) -> bool {
+    if (self.notes_on.len() != self.notes_off.len()) {
+      return false;
+    }
+
+    if (self.notes_on[*note_id].delta_time_in_seconds() == 0.0 
+    && self.notes_off[*note_id].delta_time_in_seconds() == 0.0) {
+      return true;
+    }
+    false
+  }
+
+  fn refine(&mut self) {
+    // refine
+    self.timespans = self.timespans
+      .clone()
+      .into_iter()
+      .filter(|&e| e > 1e-2)
+      .collect();
+  }
+
 
   pub fn log(&self) {
     println!("--------------------");
@@ -258,18 +305,40 @@ impl Track {
     );
     self.log_notes();
     println!("--------------------");
-    println!("\ntimespans - {} unit: {:?}", self.timespans.len(), self.timespans);
+    println!(
+      "\ntimespans - {} unit: {:?}",
+      self.timespans.len(),
+      self.timespans
+    );
     println!("timspan sum: {}", self.timespans.iter().sum::<f32>());
     println!("\nnotes_on - {} unit: ", self.notes_on.len());
     self.notes_on.iter().for_each(|e| println!("{:?}", e));
-    println!("\nnotes_on_velocity_zero - {} unit: ", self.notes_on_velocity_zero.len());
-    self .notes_on_velocity_zero.iter().for_each(|e| println!("{:?}", e));
+    println!(
+      "\nnotes_on_velocity_zero - {} unit: ",
+      self.notes_on_velocity_zero.len()
+    );
+    self
+      .notes_on_velocity_zero
+      .iter()
+      .for_each(|e| println!("{:?}", e));
     println!("\nnotes_off - {} unit: ", self.notes_off.len());
     self.notes_off.iter().for_each(|e| println!("{:?}", e));
-    println!("\nnotes_names - {} unit: {:?}", self.notes_names.len(), self.notes_names);
-    println!("\nnotes_velocities - {} unit: {:?}", self.notes_velocities.len(), self.notes_velocities);
+    println!(
+      "\nnotes_names - {} unit: {:?}",
+      self.notes_names.len(),
+      self.notes_names
+    );
+    println!(
+      "\nnotes_velocities - {} unit: {:?}",
+      self.notes_velocities.len(),
+      self.notes_velocities
+    );
 
-    println!("\nraw vec string - {} unit: {:?}", self.raw_str_vec.len(), self.raw_str_vec);
+    println!(
+      "\nraw vec string - {} unit: {:?}",
+      self.raw_str_vec.len(),
+      self.raw_str_vec
+    );
     println!("--------------------");
   }
 
@@ -289,12 +358,23 @@ impl Track {
       self.id, self.tempo, self.name, self.num_of_notes
     );
     println!("--------------------");
-    println!("\ntimespans - {} unit: {:?}", self.timespans.len(), self.timespans);
+    println!(
+      "\ntimespans - {} unit: {:?}",
+      self.timespans.len(),
+      self.timespans
+    );
     println!("timspan sum: {}", self.timespans.iter().sum::<f32>());
 
-    println!("\nraw vec string - {} unit: {:?}", self.raw_str_vec.len(), self.raw_str_vec);
+    println!(
+      "\nraw vec string - {} unit: {:?}",
+      self.raw_str_vec.len(),
+      self.raw_str_vec
+    );
     println!("num_of_notes_on: {}", self.notes_on.len());
-    println!("num_of_notes_on_velocity_zero: {}", self.notes_on_velocity_zero.len());
+    println!(
+      "num_of_notes_on_velocity_zero: {}",
+      self.notes_on_velocity_zero.len()
+    );
     println!("num_of_nots_off: {}", self.notes_off.len());
     println!("--------------------\n");
   }
