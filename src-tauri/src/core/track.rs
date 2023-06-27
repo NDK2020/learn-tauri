@@ -239,19 +239,20 @@ impl Track {
   }
 
   pub fn get_raw_str_vec(&mut self) {
+    let mut actual_id = 0; 
     let len = self.timespans.len();
     for (i, t) in self.timespans.iter().enumerate() {
       // note on & note off both equal 0 => this note and a note
       // before has double things depend on games
       if self.check_note_on_off_is_zero(&i) { continue; }
       //
-      let mut note_name_mirror = "-1".to_string();
+      let mut note_name_mirror = "nil".to_string();
       if (i + 1 < len && self.check_note_on_off_is_zero(&(i + 1))) {
         note_name_mirror = self.notes_on[i + 1].name();
       }
 
       // get duration
-      let mut duration = "-1".to_string();
+      let mut duration = "nil".to_string();
       if (self.notes_off.len() == self.notes_on.len()) {
         duration = self.notes_durations[i].clone().to_string();
       }
@@ -259,13 +260,14 @@ impl Track {
       //
       let str = format!(
         "id:{}-n:{}-t:{}-v:{}-d:{}-m:{}",
-        i,
+        actual_id,
         self.notes_names[i],
         t,
         self.notes_velocities[i],
         duration,
         note_name_mirror
       );
+      actual_id += 1;
       self.raw_str_vec.push(str);
     }
   }
